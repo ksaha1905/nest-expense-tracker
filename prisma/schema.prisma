@@ -7,29 +7,34 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  email    String    @unique
-  password String
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
-  expenses Expense[]
+  expenses  Expense[]
 }
 
 model Category {
-  id       Int       @id @default(autoincrement())
-  name     String
+  id        String    @id @default(cuid())
+  name      String    @unique
+  createdAt DateTime  @default(now())
 
-  expenses Expense[]
+  expenses  Expense[]
 }
 
 model Expense {
-  id         Int       @id @default(autoincrement())
+  id         String   @id @default(cuid())
   title      String
-  amount     Float
-  date       DateTime  @default(now())
+  amount     Decimal  @db.Decimal(10, 2)
+  date       DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  userId     Int
-  categoryId Int
+  userId     String
+  categoryId String
 
-  user       User      @relation(fields: [userId], references: [id])
-  category   Category  @relation(fields: [categoryId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id])
 }
